@@ -1,0 +1,41 @@
+#
+# Copyright Kroxylicious Authors.
+#
+# Licensed under the Apache Software License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+#
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxy
+  labels:
+    app: proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: proxy
+  template:
+    metadata:
+      labels:
+        app: proxy
+    spec:
+      containers:
+      - name: proxy
+        image: quay.io/k_wall/kroxylicious:0.5.0-SNAPSHOT
+        imagePullPolicy: Always
+        args: ["--config", "/opt/proxy/config/config.yaml"]
+        ports:
+        - containerPort: 9092
+        - containerPort: 19092
+        - containerPort: 19093
+        - containerPort: 19094
+        volumeMounts:
+        - name: config-volume
+          mountPath: /opt/proxy/config/config.yaml
+          subPath: config.yaml
+      volumes:
+      - name: config-volume
+        configMap:
+          name: proxy-config

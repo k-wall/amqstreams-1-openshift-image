@@ -1,0 +1,22 @@
+#
+# Copyright Kroxylicious Authors.
+#
+# Licensed under the Apache Software License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+#
+
+global:
+  openshift: true
+server:
+  dev:
+    enabled: true
+    devRootToken: myroottoken # needs to match that provided in proxy-config.yaml
+  ha:
+    enabled: false
+  updateStrategyType: RollingUpdate
+  route:
+    enabled: true
+    host: ""
+    tls:
+      termination: edge
+injector:
+  enabled: false
