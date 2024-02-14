@@ -53,15 +53,8 @@ Service.
    echo 'IBM:100\nAPPLE:99' | kafka-console-producer --bootstrap-server ${LOAD_BALANCER_ADDRESS}:9092 -topic trades
    ```
 
-4. 
-Now bounce kroxy...
-
-Create a key
-
-# Publish
-# Consume
-# Verify on cluster
 kubectl -n kafka run consumer -ti --image=quay.io/kroxylicious/kaf --rm=true --restart=Never -- kaf consume foo -b my-cluster-kafka-bootstrap:9092
+consume via proxy.
 
 
 
