@@ -18,5 +18,7 @@ You need to prepare a HashiCorp Vault instance now:
 Once you have a Vault instance ready, you can proceed to deploy one of the examples.
 
 * [External Load Balancer](./proxy_exposed_by_loadbalancer)
-* [External Load Balancer with TLS](./proxy_exposed_by_loadbalancer_with_tls)
 
+TODO:
+- on-cluster example
+- experiment with OpenShift Route
