@@ -13,7 +13,7 @@ Proxy.  It is external must be provided by the deployer of the system.  For this
 You need to prepare a HashiCorp Vault instance now:
 
 * If you have an instance of HashiCorp Vault already in your organisation, you may use it after applying some [configuration](./PREPARE_KMS.md#using-an-existing-vault-instance).
-* Otherwise, there are deployment instructions to help you [deploy](./PREPARE_KMS.md) a *ephemeral development* instance to the OpenShift Cluster.
+* Otherwise, there are deployment instructions to help you [deploy](./PREPARE_KMS.md#deploying-hashicorp-for-development) a *ephemeral development* instance to the OpenShift Cluster.
 
 Once you have a Vault instance ready, you can proceed to deploy one of the examples.
 
