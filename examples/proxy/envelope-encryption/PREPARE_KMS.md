@@ -48,3 +48,22 @@ You must have an HashCorp Vault instance running on premise or you have a HashiC
    ENVELOPE_ENCRYPTION_TOKEN=$(vault token create -display-name "amqstreams-proxy encryption filter" -policy=amqstreams_encryption_filter_policy -no-default-policy -orphan -field=token)
    ```
    The token will be written to the ${ENVELOPE_ENCRYPTION_TOKEN} shell variable. You'll need the token when deploying the filter in the later step.
+
+## Deploying a standalone development instance of Vault
+
+This option will give you an development instance of HashiCorp Vault with ephemeral storage.  This is sufficient to help you evaluate the
+Filter, but is *not* suitable for production or controlled test environments.
+
+It is assumed that you'll be deploying the HashiCorp Vault feature to the same OpenShift Cluster where you'll be evaluating AMQ Stream Proxy.
+
+### Prerequsites
+
+* Administrative access to the OpenShift Cluster being used to evaluate AMQ Stream Proxy
+* Helm CLI
+* oc CLI
+
+### Deploying HashiCorp for Development
+
+1. Log into the OpenShift Cluster as the adminstrator
+   `oc login https://<openshift cluster> --username <cluster admin>`
+2. 
