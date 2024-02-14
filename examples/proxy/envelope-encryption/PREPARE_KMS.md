@@ -34,7 +34,11 @@ You must have an HashCorp Vault instance running on premise or you have a HashiC
    vault secrets enable transit
    ```
    If the Transit engine was already enabled, an error will be printed but this can be ignored.
-4. To conclude follow the steps below to [Create the Vault Policy and Filter Vault Token](#create-the-vault-policy-and-filter-vault-token)
+4. Create a variable containing the Vault Transit Url.  This will be used later on.
+   ```sh
+      export VAULT_TRANSIT_URL=${VAULT_ADDR}/v1/${VAULT_NAMESPACE}/transit
+   ```   
+5. To conclude follow the steps below to [Create the Vault Policy and Filter Vault Token](#create-the-vault-policy-and-filter-vault-token)
 
 ## Deploying a standalone development instance of Vault
 
@@ -68,6 +72,10 @@ It is assumed that you'll be deploying the HashiCorp Vault feature to the same O
    ```
    export VAULT_ADDR=$(oc get route -n vault vault --template='https://{{.spec.host}}')
    ```
+5. Create a variable containing the Vault Transit Url.  This will be used later on.
+   ```sh
+      export VAULT_TRANSIT_URL=${VAULT_ADDR}/v1/transit
+   ```   
 5. To conclude follow the steps below to [Create the Vault Policy and Filter Vault Token](#create-the-vault-policy-and-filter-vault-token)
 
 ## Create the Vault Policy and Filter Vault Token
@@ -84,4 +92,9 @@ It is assumed that you'll be deploying the HashiCorp Vault feature to the same O
    oc create secret generic filter-vault-token -n proxy --from-literal=filter-vault-token.txt=${ENVELOPE_ENCRYPTION_TOKEN} --dry-run=client -o yaml > proxy-filter-vault-token.yaml
    ```
    The secret file `proxy-filter-vault-token.yaml` will be applied to the OpenShift Cluster later.
+   4. Create a variable containing the Vault Transit Url.  This will be used later on.
+   ```sh
+      export VAULT_TRANSIT_URL=${VAULT_ADDR}/v1/${VAULT_NAMESPACE}/transit
+   ```   
+
     
