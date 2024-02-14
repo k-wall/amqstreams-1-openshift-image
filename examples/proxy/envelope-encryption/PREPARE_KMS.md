@@ -85,7 +85,7 @@ It is assumed that you'll be deploying the HashiCorp Vault feature to the same O
    vault policy write amqstreams_proxy_encryption_filter_policy vault/amqstreams_proxy_encryption_filter_policy.hcl
 2. Create a Vault Token which will be used by the Envelope Encryption Filter:
    ```bash
-   ENVELOPE_ENCRYPTION_TOKEN=$(vault token create -display-name "amqstreams-proxy encryption filter" -policy=amqstreams_encryption_filter_policy -no-default-policy -orphan -field=token)
+   ENVELOPE_ENCRYPTION_TOKEN=$(vault token create -display-name "amqstreams-proxy encryption filter" -policy=amqstreams_proxy_encryption_filter_policy -no-default-policy -orphan -field=token)
    ```
 3. Prepare a secret containing the Envelope Encryption Vault Token.
    ```bash
