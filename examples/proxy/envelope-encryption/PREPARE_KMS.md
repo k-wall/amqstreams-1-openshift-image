@@ -22,15 +22,19 @@ You must have an HashCorp Vault instance running on premise or you have a HashiC
 ### Configure the Existing Instance
 
 1. Set the `VAULT_ADDR` (and `VAULT_NAMESPACE` if Enterprise) to refer to the Vault Environment.
-   ```
+   ```sh
    export VAULT_ADDR=https://<vault server>:8200
    export VAULT_NAMESPACE=<namespace(s)>
-2. Login to Vault as the Adminstrator
-   `vault login`
-3. Enable the Transit Secrets Engine.
-   `vault secrets enable transit`
-4. Create a Vault Policy for the Envelope Encryption Filter:
-   ```bash
+2. Login to Vault as the Adminstrator.
+   ```sh
+   vault login
+   ```
+4. Enable the Transit Secrets Engine.
+   ```sh
+   vault secrets enable transit
+   ```
+5. Create a Vault Policy for the Envelope Encryption Filter:
+   ```sh
    vault policy write amqstreams_proxy_encryption_filter_policy - << EOF
    path "transit/keys/KEK_*" {
    capabilities = ["read"]
@@ -44,10 +48,10 @@ You must have an HashCorp Vault instance running on premise or you have a HashiC
    EOF
    ```
 4. Create a Vault Token which will be used by the Envelope Encryption Filter:
-   ```
+   ```bash
    ENVELOPE_ENCRYPTION_TOKEN=$(vault token create -display-name "amqstreams-proxy encryption filter" -policy=amqstreams_encryption_filter_policy -no-default-policy -orphan -field=token)
    ```
-   The token will be written to the ${ENVELOPE_ENCRYPTION_TOKEN} shell variable. You'll need the token when deploying the filter in the later step.
+   The token will be written to the `${ENVELOPE_ENCRYPTION_TOKEN}` shell variable. You'll need the token when deploying the filter in the later step.
 
 ## Deploying a standalone development instance of Vault
 
@@ -60,10 +64,37 @@ It is assumed that you'll be deploying the HashiCorp Vault feature to the same O
 
 * Administrative access to the OpenShift Cluster being used to evaluate AMQ Stream Proxy
 * Helm CLI
-* oc CLI
+* OpenShift CLI (oc)
 
 ### Deploying HashiCorp for Development
 
-1. Log into the OpenShift Cluster as the adminstrator
-   `oc login https://<openshift cluster> --username <cluster admin>`
-2. 
+1. Log in to the OpenShift Cluster as the adminstrator
+   ```sh
+   oc login https://<openshift cluster> --username <cluster admin>
+   ```
+2. Create a Vault Root Token. Keep a note of the token assigned.
+   ```sh
+   export VAULT_TOKEN=$(cat /dev/urandom | LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+   ```
+3. Install Vault using Helm
+   ```sh
+   helm repo add hashicorp https://helm.releases.hashicorp.com
+   helm install vault hashicorp/vault --create-namespace --namespace=vault  --values vault/helm-dev-values.yaml --set server.dev.devRootToken=${VAULT_TOKEN}
+   ```
+4. Assign the `VAULT_ADDR` environment variable to point at the new instance.
+   ```
+   export VAULT_ADDR=TODO: query the route
+   ```
+6. 
+    
+4. Create a Vault Policy for the Envelope Encryption Filter:
+   ```sh
+   vault policy write amqstreams_proxy_encryption_filter_policy vault/amqstreams_proxy_encryption_filter_policy.hcl
+5. Create a Vault Token which will be used by the Envelope Encryption Filter. The token will be written to the `${ENVELOPE_ENCRYPTION_TOKEN}` shell variable. You'll need the token when deploying the filter in the later step.
+   ```bash
+   ENVELOPE_ENCRYPTION_TOKEN=$(vault token create -display-name "amqstreams-proxy encryption filter" -policy=amqstreams_encryption_filter_policy -no-default-policy -orphan -field=token)
+   ```
+6. Assign the `VAULT_ADDR` environment variable.
+   ```
+   export VAULT_ADDR=
+    
