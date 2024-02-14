@@ -15,8 +15,7 @@ You need to prepare a HashiCorp Vault instance now:
 * If you have an instance of HashiCorp Vault already in your organisation, you may use it after applying some [configuration](./VAULT.adoc).
 * Otherwise, there are deployment instructions to help you [deploy](./VAULT.adoc) a *ephemeral development* instance to the OpenShift Cluster.
 
-
-## Examples
+Once you have a Vault instance ready, you can proceed to deploy one of the examples.
 
 * [External Load Balancer](./proxy_exposed_by_loadbalancer)
 * [External Load Balancer with TLS](./proxy_exposed_by_loadbalancer_with_tls)
