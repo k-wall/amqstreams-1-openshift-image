@@ -4,7 +4,6 @@ In this example, an instance of Apache Kafka is deployed using AMQ Stream.  The 
 AMQ Streams Proxy configured with Envelope Encyption.  The proxy is exposed off cluster using a Kubernetes
 Service.
 
-
 # Prerequsistes
 
 * [KMS is prepared](../PREPARE_KMS.md).
@@ -48,15 +47,18 @@ Service.
    ```
    kafka-topics.sh --bootstrap-server ${LOAD_BALANCER_ADDRESS}:9092 --create -topic trades
    ```
-3. 
+3. Produce some messages to the topic
    ```
    echo 'IBM:100\nAPPLE:99' | kafka-console-producer --bootstrap-server ${LOAD_BALANCER_ADDRESS}:9092 -topic trades
    ```
-
-kubectl -n kafka run consumer -ti --image=quay.io/kroxylicious/kaf --rm=true --restart=Never -- kaf consume foo -b my-cluster-kafka-bootstrap:9092
-consume via proxy.
-
-
+4. Consume messages direct from the Kafka Cluster, showing that they are encrypted.
+   ```
+    kubectl -n kafka run consumer -ti --image=quay.io/kroxylicious/kaf --rm=true --restart=Never -- kaf consume trades -b my-cluster-kafka-bootstrap:9092
+   ```
+5. Consume messages from the proxy showing they are decrypted.   
+   ```
+    kafka-console-consumer --bootstrap-server ${LOAD_BALANCER_ADDRESS}:9092 -topic trades --from-beginning
+   ```   
 
 # Cleaning up
 
