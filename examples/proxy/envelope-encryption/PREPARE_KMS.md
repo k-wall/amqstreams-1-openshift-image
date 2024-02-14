@@ -89,8 +89,8 @@ It is assumed that you'll be deploying the HashiCorp Vault feature to the same O
    ```
 3. Prepare a secret containing the Envelope Encryption Vault Token.
    ```bash
-   oc create secret generic filter-vault-token -n proxy --from-literal=filter-vault-token.txt=${ENVELOPE_ENCRYPTION_TOKEN} --dry-run=client -o yaml > proxy-filter-vault-token.yaml
+   oc create secret generic envelope-encryption-vault-token -n proxy --from-literal=envelope-encryption-vault-token.txt=${ENVELOPE_ENCRYPTION_TOKEN} --dry-run=client -o yaml > envelope-encryption-vault-token-secret.yaml
    ```
-   The secret file `proxy-filter-vault-token.yaml` will be applied to the OpenShift Cluster later.
+   The secret file `envelope-encryption-vault-token-secret.yaml` will be applied to the OpenShift Cluster later.
 
     

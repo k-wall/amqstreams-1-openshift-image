@@ -1,8 +1,0 @@
-apiVersion: v1
-data:
-  filter-vault-token.txt: aHZzLkNBRVNJRlJRTUMwdG9ZaXlwOHlQQTZyZXpjUHhOdE1tajVMNkVzYnpsZHRPUlVIcUdoNEtIR2gyY3k1bU9HNUJNMkpzV21Vd2RXWmtVR1puYW1FeVFXSjRlbWM=
-kind: Secret
-metadata:
-  creationTimestamp: null
-  name: filter-vault-token
-  namespace: proxy
