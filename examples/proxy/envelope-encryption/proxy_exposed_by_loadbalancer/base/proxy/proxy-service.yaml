@@ -11,7 +11,7 @@ metadata:
   name: proxy-service
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-type: nlb
-    #service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags:  <FIXME: copied from router-default>
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: red-hat-managed=true  # workaround for https://issues.redhat.com/browse/OSD-20193
 spec:
   type: LoadBalancer
   selector:

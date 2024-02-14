@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: proxy
-        image: quay.io/k_wall/kroxylicious:0.5.0-SNAPSHOT
+        image: quay.io/kroxylicious/kroxylicious-developer:0.5.0-SNAPSHOT
         imagePullPolicy: Always
         args: ["--config", "/opt/proxy/config/config.yaml"]
         ports:
@@ -35,7 +35,14 @@ spec:
         - name: config-volume
           mountPath: /opt/proxy/config/config.yaml
           subPath: config.yaml
+        - name: proxy-server-envelope-encryption-vault-token
+          readOnly: true
+          subPath: envelope-encryption-vault-token.txt
+          mountPath: /opt/proxy/envelope-encryption/token.txt
       volumes:
       - name: config-volume
         configMap:
           name: proxy-config
+      - name: proxy-server-envelope-encryption-vault-token
+        secret:
+          secretName: envelope-encryption-vault-token
