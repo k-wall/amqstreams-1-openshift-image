@@ -34,7 +34,7 @@ You must have an HashCorp Vault instance running on premise or you have a HashiC
    vault secrets enable transit
    ```
    If the Transit engine was already enabled, an error will be printed but this can be ignored.
-4. To conclude follow the steps below to create the Vault Policy and Filter Vault Token
+4. To conclude follow the steps below to [Create the Vault Policy and Filter Vault Token](#create-the-vault-policy-and-filter-vault-token)
 
 ## Deploying a standalone development instance of Vault
 
@@ -68,8 +68,7 @@ It is assumed that you'll be deploying the HashiCorp Vault feature to the same O
    ```
    export VAULT_ADDR=$(oc get route -n vault vault --template='https://{{.spec.host}}')
    ```
-5. To conclude follow the steps below to create the Vault Policy and Filter Vault Token
-
+5. To conclude follow the steps below to [Create the Vault Policy and Filter Vault Token](#create-the-vault-policy-and-filter-vault-token)
 
 ## Create the Vault Policy and Filter Vault Token
 
