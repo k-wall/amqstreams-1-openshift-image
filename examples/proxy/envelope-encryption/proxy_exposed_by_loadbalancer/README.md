@@ -1,74 +1,41 @@
+# AMQ Streams Proxy Envelope Encryption, exposed by load balancer
 
-# Assumes
-
-Vault CLI
-oc command line
-kafka CLIs
-
-# Operators
-
-AMQ Streams
-Cert Manager
-
-## Vault
-
-If you do not already have an instance of Vault available, you can deploy an development server.  The instance is
-single server and epheremal storage so key material will be lost on each restart. It is not suitable for production use!
+In this example, an instance of Apache Kafka is deployed using AMQ Stream.  The instance is proxied using
+AMQ Streams Proxy configured with Envelope Encyption.  The proxy is exposed off cluster using a Kubernetes
+Service.
 
 
-```bash
-helm repo add hashicorp https://helm.releases.hashicorp.com
-# TODO make user choose a root token
-helm install vault hashicorp/vault --create-namespace --namespace=vault
-```
+# Prerequsistes
 
-Get the URL of the Vault Console and External API endpoint:
-```bash
-oc get routes -n vault vault --template='https://{{.spec.host}}'
-```
+* The [KMS is prepared](../PREPARE_KMS.md).
+* Administrative access to the OpenShift Cluster being used to evaluate AMQ Stream Proxy
+* OpenShift CLI (oc)
+* AMQ Stream Operator is installed namespace wide
 
-Now configure Vault:
+# Deploying the Example
 
-```bash
-export VAULT_ADDR=$(oc get routes -n vault vault --template='https://{{.spec.host}}')
-vault login
-vault secrets enable transit
+1. Deploy the Example
+   ```sh
+   oc apply -k base
+   ```
+2. Apply the `envelope-encryption-vault-token-secret.yaml` created durin the KMS preparation step.
+   ```sh
+   oc apply -n proxy -f ../envelope-encryption-vault-token-secret.yaml
+   ```
+3. Get the external address of the proxy service
+   ```sh
+   LOAD_BALANCER_ADDRESS=$(oc get service -n proxy proxy-service --template='{{(index .status.loadBalancer.ingress 0).hostname}}')
+   ```
+4. Now update the `brokerAddressPattern:` to match the `LOAD_BALANCER_ADDRESS`.
+   ```sh
+     sed -i  "s/\(brokerAddressPattern:\).*$/\1 ${LOAD_BALANCER_ADDRESS}/" base/proxy/proxy-config.yaml
+   ```
+5. Reapply and bounce
+   ```sh
+      oc apply -k base && oc delete pod -n proxy
+   ```
 
-vault policy write kroxylicious_encryption_filter_policy - << EOF
-path "transit/keys/KEK_*" {
-capabilities = ["read"]
-}
-path "/transit/datakey/plaintext/KEK_*" {
-capabilities = ["update"]
-}
-path "transit/decrypt/KEK_*" {
-capabilities = [ "update"]
-}
-EOF
-
-# TODO create the token in a secret so we can mount it straight in the kroxy deployment
-export PROXY_VAULT_TOKEN=$(vault token create -display-name "kroxylicious encryption filter"  -policy=kroxylicious_encryption_filter_policy  -no-default-policy  -orphan -field=token)
-
-
-```
-
-
-```bash
-oc apply -k overlays/selfsigned
-```
-
-# ROSA- why do I need to do this? 
-
-oc annotate service -n proxy proxy-service "service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags=$(oc get service -n openshift-ingress  router-default --template='{{(index .metadata.annotations "service.beta.kubernet
-es.io/aws-load-balancer-additional-resource-tags")}}')"
-
-Now we can get the external address of the service
-
-BROKER_ADDRESE=$(oc get service -n proxy proxy-service --template='{{(index .status.loadBalancer.ingress 0).hostname}}')
-
-Now update the kroxy config to use the 
-
-brokerAddressPattern: <whatever>
+# Try out the example
 
 Now bounce kroxy...
 
