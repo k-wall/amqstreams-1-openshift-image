@@ -29,29 +29,12 @@ You must have an HashCorp Vault instance running on premise or you have a HashiC
    ```sh
    vault login
    ```
-4. Enable the Transit Secrets Engine.
+3. Enable the Transit Secrets Engine.
    ```sh
    vault secrets enable transit
    ```
-5. Create a Vault Policy for the Envelope Encryption Filter:
-   ```sh
-   vault policy write amqstreams_proxy_encryption_filter_policy - << EOF
-   path "transit/keys/KEK_*" {
-   capabilities = ["read"]
-   }
-   path "/transit/datakey/plaintext/KEK_*" {
-   capabilities = ["update"]
-   }
-   path "transit/decrypt/KEK_*" {
-   capabilities = [ "update"]
-   }
-   EOF
-   ```
-4. Create a Vault Token which will be used by the Envelope Encryption Filter:
-   ```bash
-   ENVELOPE_ENCRYPTION_TOKEN=$(vault token create -display-name "amqstreams-proxy encryption filter" -policy=amqstreams_encryption_filter_policy -no-default-policy -orphan -field=token)
-   ```
-   The token will be written to the `${ENVELOPE_ENCRYPTION_TOKEN}` shell variable. You'll need the token when deploying the filter in the later step.
+   If the Transit engine was already enabled, an error will be printed but this can be ignored.
+4. To conclude follow the steps below to create the Vault Policy and Filter Vault Token
 
 ## Deploying a standalone development instance of Vault
 
@@ -79,22 +62,27 @@ It is assumed that you'll be deploying the HashiCorp Vault feature to the same O
 3. Install Vault using Helm
    ```sh
    helm repo add hashicorp https://helm.releases.hashicorp.com
-   helm install vault hashicorp/vault --create-namespace --namespace=vault  --values vault/helm-dev-values.yaml --set server.dev.devRootToken=${VAULT_TOKEN}
+   helm install vault hashicorp/vault --create-namespace --namespace=vault  --values vault/helm-dev-values.yaml --set server.dev.devRootToken=${VAULT_TOKEN} --wait
    ```
 4. Assign the `VAULT_ADDR` environment variable to point at the new instance.
    ```
-   export VAULT_ADDR=TODO: query the route
+   export VAULT_ADDR=$(oc get route -n vault vault --template='https://{{.spec.host}}')
    ```
-6. 
-    
-4. Create a Vault Policy for the Envelope Encryption Filter:
+5. To conclude follow the steps below to create the Vault Policy and Filter Vault Token
+
+
+## Create the Vault Policy and Filter Vault Token
+
+1. Create a Vault Policy for the Envelope Encryption Filter:
    ```sh
    vault policy write amqstreams_proxy_encryption_filter_policy vault/amqstreams_proxy_encryption_filter_policy.hcl
-5. Create a Vault Token which will be used by the Envelope Encryption Filter. The token will be written to the `${ENVELOPE_ENCRYPTION_TOKEN}` shell variable. You'll need the token when deploying the filter in the later step.
+2. Create a Vault Token which will be used by the Envelope Encryption Filter:
    ```bash
    ENVELOPE_ENCRYPTION_TOKEN=$(vault token create -display-name "amqstreams-proxy encryption filter" -policy=amqstreams_encryption_filter_policy -no-default-policy -orphan -field=token)
    ```
-6. Assign the `VAULT_ADDR` environment variable.
+3. Prepare a secret containing the Envelope Encryption Vault Token.
+   ```bash
+   oc create secret generic filter-vault-token -n proxy --from-literal=filter-vault-token.txt=${ENVELOPE_ENCRYPTION_TOKEN} --dry-run=client -o yaml > proxy-filter-vault-token.yaml
    ```
-   export VAULT_ADDR=
+   The secret file `proxy-filter-vault-token.yaml` will be applied to the OpenShift Cluster later.
     

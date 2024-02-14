@@ -18,5 +18,11 @@ server:
     host: ""
     tls:
       termination: edge
+  postStart:
+  - vault
+  - secrets
+  - enable
+  - transit
+
 injector:
   enabled: false
