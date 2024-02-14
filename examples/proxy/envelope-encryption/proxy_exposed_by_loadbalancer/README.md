@@ -7,10 +7,13 @@ Service.
 
 # Prerequsistes
 
-* The [KMS is prepared](../PREPARE_KMS.md).
+* [KMS is prepared](../PREPARE_KMS.md).
+* Vault CLI
+
 * Administrative access to the OpenShift Cluster being used to evaluate AMQ Stream Proxy
 * OpenShift CLI (oc)
 * AMQ Stream Operator is installed namespace wide
+* Apache Kafka CLI
 
 # Deploying the Example
 
@@ -37,6 +40,20 @@ Service.
 
 # Try out the example
 
+1. Create a key for topic `trades` in the KMS:
+   ```
+   vault write -f transit/keys/KEK_trades
+   ```
+2. Create a topic `trades` on the cluster, via the proxy:
+   ```
+   kafka-topics.sh --bootstrap-server ${LOAD_BALANCER_ADDRESS}:9092 --create -topic trades
+   ```
+3. 
+   ```
+   echo 'IBM:100\nAPPLE:99' | kafka-console-producer --bootstrap-server ${LOAD_BALANCER_ADDRESS}:9092 -topic trades
+   ```
+
+4. 
 Now bounce kroxy...
 
 Create a key
