@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: proxy
 
 resources:
+- proxy-deployment.yaml
 - proxy-service.yaml
 - proxy-config.yaml
 
