@@ -21,6 +21,9 @@ spec:
         image: quay.io/kroxylicious/kroxylicious:fortanix-demo
         imagePullPolicy: Always
         args: ["--config", "/opt/proxy/config/config.yaml"]
+        env:
+        - name: KROXYLICIOUS_APP_LOG_LEVEL
+          value: INFO
         ports:
         - name: metrics
           containerPort: 9190

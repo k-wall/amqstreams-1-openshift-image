@@ -26,8 +26,11 @@ data:
           # declares the kafka cluster that is being proxied
           bootstrap_servers: my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092
         logFrames: false
-    filters:
+    defaultFilters:
+    - encrypt
+    filterDefinitions:
     - type: RecordEncryption
+      name: encrypt
       config:
         # User: uncomment this section if you are using Vault.
         kms: FortanixDsmKmsService
@@ -40,7 +43,7 @@ data:
         # Change region identifier in the region and endpointUrl if you are using a region other than us-east-1.
         #kms: AwsKmsService
         #kmsConfig:
-        #  endpointUrl: https://kms.us-east-1.amazonaws.com
+        #  endpointUrl: https://api.uk.smartkey.io
         #  region: us-east-1
         #  accessKey:
         #    passwordFile: /opt/proxy/encryption/kms-secrets/accessKeyId.txt
