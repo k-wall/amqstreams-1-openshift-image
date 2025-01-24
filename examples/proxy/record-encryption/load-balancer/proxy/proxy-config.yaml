@@ -29,6 +29,13 @@ data:
     filters:
     - type: RecordEncryption
       config:
+        # User: uncomment this section if you are using Vault.
+        kms: FortanixDsmKmsService
+        kmsConfig:
+          endpointUrl: https://api.uk.smartkey.io
+          apiKeySessionProvider:
+            apiKey:
+              passwordFile: /opt/proxy/encryption/kms-secrets/token.txt
         # User: uncomment this section if you are using AWS.
         # Change region identifier in the region and endpointUrl if you are using a region other than us-east-1.
         #kms: AwsKmsService

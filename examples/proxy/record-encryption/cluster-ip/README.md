@@ -35,6 +35,11 @@ Cluster-IP.
    ```sh
    aws kms create-alias --alias-name alias/KEK_trades --target-key-id $(aws kms create-key | jq -r '.KeyMetadata.KeyId')
    ```
+   Fortanix DSM:
+   ```sh
+   aws kms create-alias --alias-name alias/KEK_trades --target-key-id $(aws kms create-key | jq -r '.KeyMetadata.KeyId')
+   ```
+
 2. Create a topic `trades` on the cluster, via the proxy:
    ```sh
    oc run -n kafka-proxy -qi create-topic --image=registry.redhat.io/amq-streams/kafka-38-rhel9:2.8.0 --rm=true --restart=Never -- bin/kafka-topics.sh --bootstrap-server proxy-service:9092 --create --topic trades
