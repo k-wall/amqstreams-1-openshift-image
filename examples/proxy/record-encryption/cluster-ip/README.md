@@ -27,14 +27,6 @@ Cluster-IP.
 
 1. Create a key for topic `trades` using the instructions applicable to your KMS provider:
 
-   Vault:
-   ```sh
-   vault write -f transit/keys/KEK_trades
-   ```
-   AWS:
-   ```sh
-   aws kms create-alias --alias-name alias/KEK_trades --target-key-id $(aws kms create-key | jq -r '.KeyMetadata.KeyId')
-   ```
    Fortanix DSM:
    ```sh
    KEY_NAME="KEK_trades"
