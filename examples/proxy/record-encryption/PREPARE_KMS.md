@@ -217,7 +217,7 @@ python3 -m venv ./venv
 pip3 install sdkms-cli
 
 FORTANIX_API_ENDPOINT=https://api.uk.smartkey.io
-sdkms-cli user-login  --username kwall@redhat.com
+sdkms-cli user-login  --username xxxx@yyyy.zzz
 ```
 
 ### Create a Fortanix Group for the Topic Keys
