@@ -216,7 +216,7 @@ python3 -m venv ./venv
 . ./venv/bin/activate
 pip3 install sdkms-cli
 
-FORTANIX_API_ENDPOINT=https://api.uk.smartkey.io
+export FORTANIX_API_ENDPOINT=https://api.uk.smartkey.io
 sdkms-cli user-login  --username xxxx@yyyy.zzz
 ```
 
