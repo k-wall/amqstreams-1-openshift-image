@@ -37,8 +37,10 @@ Cluster-IP.
    ```
    Fortanix DSM:
    ```sh
-   aws kms create-alias --alias-name alias/KEK_trades --target-key-id $(aws kms create-key | jq -r '.KeyMetadata.KeyId')
-   ```
+   KEY_NAME="KEK_trades"
+   GROUP_ID=$(sdkms-cli  list-groups | grep topic-keks | awk '{print $1}')
+   sdkms-cli create-key --obj-type AES --key-size 256 --group-id ${GROUP_ID} --name ${KEY_NAME} --key-ops ENCRYPT,DECRYPT,APPMANAGEABLE
+      ```
 
 2. Create a topic `trades` on the cluster, via the proxy:
    ```sh
