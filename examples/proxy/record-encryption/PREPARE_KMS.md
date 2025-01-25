@@ -246,7 +246,7 @@ sdkms-cli get-app-api-key --name kroxylicious > fortanix-dsm.apikey
 
 2. Update the proxy config to refer to your Fortanix DSM instance:
    ```sh
-      sed -i "s/\(vaultTransitEngineUrl:\).*$/\1 ${VAULT_TRANSIT_URL}/" */proxy/proxy-config.yaml
+      sed -i "s_\(endpointUrl:\).*$_\1 ${FORTANIX_API_ENDPOINT}_" */proxy/proxy-config.yaml
    ```  
 
 ## Cleaning up
