@@ -1,38 +1,34 @@
-# Streams for Apache Kafka Proxy Record Encryption, exposed by External Load Balancer
+# Kroxylicious Record Encryption, exposed using External Load Balancer
 
-In this example, an instance of Apache Kafka is deployed using Streams for Apache Kafka.  The instance is proxied using
-Streams for Apache Kafka Proxy configured with Record Encryption.  The proxy is exposed off cluster using a Kubernetes
-Service.
+In this example, the proxy is exposed off-cluster using a External Load Balancer.  This is suitable if the applications are
+running off-cluster.
 
 # Prerequisites
 
 * [KMS is prepared](../PREPARE_KMS.md).
-* Vault CLI or AWS CLI
+* Fortanix DSM CLI.
 * GNU `sed`
 
-* Administrative access to the OpenShift Cluster being used to evaluate Streams for Apache Kafka Proxy
+* Administrative access to an OpenShift Cluster 
 * Streams for Apache Kafka Operator (installed cluster wide)
 * OpenShift CLI (`oc`)
 * Apache Kafka CLI tools (`kafka-topics.sh`, `kafka-console-producer.sh`, and `kafka-console-consumer.sh`) found in the `bin` directory of the Streams for Apache Kafka on RHEL distribution.
 
 # Deploying the Example
 
-1. Edit `load-balancer/proxy/proxy-config.yaml` and `base/proxy/kustomization.yaml`. Uncomment either the
-   configuration for Vault or AWS, depending on your KMS provider:
-
-2. Deploy the Example:
+1. Deploy the Example:
    ```sh
    oc apply -k load-balancer
    ```
-3. Get the external address of the proxy service:
+2. Get the external address of the proxy service:
    ```sh
    LOAD_BALANCER_ADDRESS=$(oc get service -n kafka-proxy proxy-service --template='{{(index .status.loadBalancer.ingress 0).hostname}}')
    ```
-4. Now update the `brokerAddressPattern:` to match the `LOAD_BALANCER_ADDRESS`:
+3. Now update the `brokerAddressPattern:` to match the `LOAD_BALANCER_ADDRESS`:
    ```sh
      sed -i  "s/\(brokerAddressPattern:\).*$/\1 ${LOAD_BALANCER_ADDRESS}/" load-balancer/proxy/proxy-config.yaml
    ```
-5. Reapply and restart:
+4. Reapply and restart:
    ```sh
       oc apply -k load-balancer && oc delete pod -n kafka-proxy --all
    ```
@@ -41,14 +37,12 @@ Service.
 
 1. Create a key for topic `trades` using the instructions applicable to your KMS provider:
    
-   Vault:
    ```sh
-   vault write -f transit/keys/KEK_trades
+   KEY_NAME="KEK_trades"
+   GROUP_ID=$(sdkms-cli  list-groups | grep topic-keks | awk '{print $1}')
+   sdkms-cli create-key --obj-type AES --key-size 256 --group-id ${GROUP_ID} --name ${KEY_NAME} --key-ops ENCRYPT,DECRYPT,APPMANAGEABLE
    ```
-   AWS:
-   ```sh
-   aws kms create-alias --alias-name alias/KEK_trades --target-key-id $(aws kms create-key | jq -r '.KeyMetadata.KeyId')
-   ```
+
 2. Create a topic `trades` on the cluster, via the proxy:
    ```sh
    kafka-topics.sh --bootstrap-server ${LOAD_BALANCER_ADDRESS}:9092 --create -topic trades

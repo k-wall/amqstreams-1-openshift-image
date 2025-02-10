@@ -18,7 +18,7 @@ spec:
       containers:
       - name: proxy
         #image: registry.redhat.io/amq-streams/proxy-rhel9:2.8
-        image: quay.io/kroxylicious/kroxylicious:fortanix-demo
+        image: quay.io/kroxylicious/kroxylicious:0.10.0
         imagePullPolicy: Always
         args: ["--config", "/opt/proxy/config/config.yaml"]
         env:

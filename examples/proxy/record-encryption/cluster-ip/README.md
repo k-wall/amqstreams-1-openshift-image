@@ -1,24 +1,21 @@
-# Streams for Apache Kafka Proxy Record Encryption, exposed using Cluster-IP
+# Kroxylicious Record Encryption, exposed using Cluster-IP
 
-In this example, an instance of Apache Kafka is deployed using Streams for Apache Kafka.  The instance is proxied using
-Streams for Apache Kafka Proxy is configured with Record Encryption.  The proxy is exposed within the cluster using a
-Cluster-IP.
+In this example, the proxy is exposed using a Cluster-IP.  This is suitable if the applications are
+deployed on-cluster.
 
 # Prerequisites
 
 * [KMS is prepared](../PREPARE_KMS.md).
-* Vault CLI or AWS CLI 
+* Fortanix DSM CLI.
 
-* Administrative access to the OpenShift Cluster being used to evaluate Streams for Apache Kafka Proxy
+* Administrative access to an OpenShift Cluster
 * OpenShift CLI (oc)
 * Streams for Apache Kafka Operator (installed namespace wide)
 
 # Deploying the Example
 
-1. Edit `cluster-ip/proxy/proxy-config.yaml` and `base/proxy/kustomization.yaml`. Uncomment either the
-   configuration for Vault or AWS, depending on your KMS provider:
 
-2. Deploy the Example:
+1. Deploy the Example:
    ```sh
    oc apply -k cluster-ip
    ```
@@ -27,12 +24,11 @@ Cluster-IP.
 
 1. Create a key for topic `trades` using the instructions applicable to your KMS provider:
 
-   Fortanix DSM:
    ```sh
    KEY_NAME="KEK_trades"
    GROUP_ID=$(sdkms-cli  list-groups | grep topic-keks | awk '{print $1}')
    sdkms-cli create-key --obj-type AES --key-size 256 --group-id ${GROUP_ID} --name ${KEY_NAME} --key-ops ENCRYPT,DECRYPT,APPMANAGEABLE
-      ```
+   ```
 
 2. Create a topic `trades` on the cluster, via the proxy:
    ```sh

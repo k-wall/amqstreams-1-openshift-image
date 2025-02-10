@@ -10,31 +10,40 @@ This example assumes Fortanix DSM SaaS.
 
 You must have 
 
-* Fortanix DSM account
+* Fortanix DSM account with permissions to create apps, groups and keys
 * Know the Fortanix DSM endpoint e.g. https://api.uk.smartkey.io
-* Fortanix DSM CLI installed and have logged in 
-* GNU sed
+* Tools
+** GNU sed
+** Python 3 (for the Fortanix CLI)
+** OpenShift Client
 
-### CLI
+### Installing the Fortanix DSM CLI
+
+If you haven't get the Fortanix CLI installed on your system, install it locally.  You can use a Python Virtual Env if you wish.
 
 ```
 python3 -m venv ./venv
 . ./venv/bin/activate
 pip3 install sdkms-cli
+```
 
+### Login to Fortanix DSM
+
+Log into Fortanix DSM:
+
+
+```
 export FORTANIX_API_ENDPOINT=https://api.uk.smartkey.io
-sdkms-cli user-login  --username xxxx@yyyy.zzz
+sdkms-cli user-login --username xxxx@yyyy.zzz
 ```
 
 ### Create a Fortanix Group for the Topic Keys
 
-
 ```
-sdkms-cli  create-group --name topic-keks
+sdkms-cli create-group --name topic-keks
 ```
 
-you'll need the group id later.
-
+Keep a note of the group id, you'll need that later.
 
 ### Create a Fortanix App for use by Record Encryption and retrieve the API key
 
@@ -42,8 +51,6 @@ you'll need the group id later.
 sdkms-cli create-app --name kroxylicious --default-group topic-keks --groups topic-keks
 sdkms-cli get-app-api-key --name kroxylicious > fortanix-dsm.apikey
 ```
-
-### 
 
 1. Create a secret containing the Fortanix Api Key
    ```sh
@@ -55,13 +62,30 @@ sdkms-cli get-app-api-key --name kroxylicious > fortanix-dsm.apikey
       sed -i "s|\(endpointUrl:\).*$|\1 ${FORTANIX_API_ENDPOINT}|" */proxy/proxy-config.yaml
    ```  
 
-## Cleaning up
+# Cleaning up
+
+Once you've finished experimenting, you can use these commands to clean up Fortanix DSM returning it to the initial state.
+
+
+Delete the key.
 
 ```sh
 sdkms-cli list-keys
 # then delete the keys by kid
-sdkms-cli  delete-key --kid 0e83e230-964c-4358-921a-5fa8d4b6ef88
+sdkms-cli delete-key --kid 0e83e230-964c-4358-921a-5fa8d4b6ef88
+```
 
+Delete the group.
+
+
+```sh
+sdkms-cli delete-group --name topic-keks
+```
+
+Delete the app.
+
+```sh
+sdkms-cli delete-app  --name kroxylicious
 ```
 
 Finally, delete the .apikey files:
