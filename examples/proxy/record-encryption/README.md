@@ -7,10 +7,11 @@ The filter also decrypts messages before they are returned to consuming applicat
 In this directory, you'll find examples that help you deploy Kroxylicious with the Record Encryption filter to your OpenShift Cluster so that you may try out the feature together
 with your own application.
 
-The Record Encryption filter requires a Key Management System (KMS).   In this demo, we choose to use the Fortanix DSM integration.
+The Record Encryption filter requires a Key Management System (KMS). In this demo, we choose to use the Fortanix DSM integration.
 
 Follow the [KMS preparation instructions](./PREPARE_KMS.md) then proceed to deploy one of the examples.  
 
 * [Cluster IP](./cluster-ip)
 * [External Load Balancer](./load-balancer)
+* [OpenShift Route](./openshift-route)
 
