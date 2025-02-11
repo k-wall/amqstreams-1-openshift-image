@@ -3,3 +3,7 @@ kind: Kustomization
 resources:
 - ../base
 - proxy
+
+
+components:
+- ../components/downstream-tls-support

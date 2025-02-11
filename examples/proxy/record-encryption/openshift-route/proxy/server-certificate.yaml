@@ -26,9 +26,9 @@ spec:
        name: kroxy-server-keystore-password
        key: storePassword
   dnsNames:
-    - proxy-bootstrap-kafka-proxy.apps.rosa.objui-bb3ke-9ks.d41a.p3.openshiftapps.com
-    - proxy-broker-0-kafka-proxy.apps.rosa.objui-bb3ke-9ks.d41a.p3.openshiftapps.com
-    - proxy-broker-1-kafka-proxy.apps.rosa.objui-bb3ke-9ks.d41a.p3.openshiftapps.com
+    - proxy-bootstrap-kafka-proxy.apps.rosa.utay6-yia98-jfk.4akp.p3.openshiftapps.com
+    - proxy-broker-0-kafka-proxy.apps.rosa.utay6-yia98-jfk.4akp.p3.openshiftapps.com
+    - proxy-broker-1-kafka-proxy.apps.rosa.utay6-yia98-jfk.4akp.p3.openshiftapps.com
   usages:
     - server auth
   issuerRef:

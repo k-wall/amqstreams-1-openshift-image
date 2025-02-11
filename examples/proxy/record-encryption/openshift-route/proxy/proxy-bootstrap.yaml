@@ -5,6 +5,8 @@ metadata:
 spec:
   port:
     targetPort: 9092
+  tls:
+    termination: passthrough 
   to:
     kind: Service
     name: proxy-service

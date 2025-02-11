@@ -1,6 +1,6 @@
 # Kroxylicious Record Encryption, exposed using External Load Balancer
 
-In this example, the proxy is exposed off-cluster using a External Load Balancer.  This is suitable if the applications are
+In this example, the proxy is exposed off-cluster using OpenShift Routes.  This is suitable if the applications are
 running off-cluster.
 
 # Prerequisites
@@ -18,19 +18,20 @@ running off-cluster.
 
 1. Deploy the Example:
    ```sh
-   oc apply -k load-balancer
+   oc apply -k openshift-route
    ```
 2. Get the external address of the proxy service:
    ```sh
-   LOAD_BALANCER_ADDRESS=$(oc get service -n kafka-proxy proxy-service --template='{{(index .status.loadBalancer.ingress 0).hostname}}')
+   DOMAIN=$(oc get ingresscontrollers.operator.openshift.io -n openshift-ingress-operator default  --template='{{.spec.domain}}')
    ```
 3. Now update the `brokerAddressPattern:` to match the `LOAD_BALANCER_ADDRESS`:
    ```sh
+     sed -i  "s|apps.[a-z0-9.]*.openshiftapps.com|${DOMAIN}|g" openshift-route/proxy/proxy-config.yaml openshift-route/proxy/server-certificate.yaml
      sed -i  "s/\(brokerAddressPattern:\).*$/\1 ${LOAD_BALANCER_ADDRESS}/" load-balancer/proxy/proxy-config.yaml
    ```
 4. Reapply and restart:
    ```sh
-      oc apply -k load-balancer && oc delete pod -n kafka-proxy --all
+      oc apply -k openshift-route && oc delete pod -n kafka-proxy --all
    ```
 
 # Try out the example
